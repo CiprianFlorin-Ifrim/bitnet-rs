@@ -9,6 +9,19 @@ and Linux (x86-64).
 
 ---
 
+## Installation
+
+Add to your `Cargo.toml`:
+```toml
+[dependencies]
+bitnet-rs = "1.0.0"
+```
+
+Note: the first build compiles bitnet.cpp from source via CMake which takes a
+few minutes. Subsequent builds use the cached output.
+
+---
+
 ## Prerequisites
 
 | Tool | Notes |
@@ -95,13 +108,13 @@ cargo run --release --example inference_chat_multiturn -- \
 
 #### Single-turn inference
 ```rust
-use bitnet::{
+use bitnet_rs::{
     init, suppress_warnings, ContextParams, GenerateParams,
     Model, ModelParams, SamplingStrategy,
 };
 use std::io::Write;
 
-fn main() -> Result<(), bitnet::Error> {
+fn main() -> Result<(), bitnet_rs::Error> {
     init();
     suppress_warnings();
 
@@ -142,7 +155,7 @@ fn main() -> Result<(), bitnet::Error> {
     )?;
     println!("{response}");
 
-    bitnet::deinit();
+    bitnet_rs::deinit();
     Ok(())
 }
 ```
@@ -153,13 +166,13 @@ Sessions track KV cache position across turns. Only new tokens are encoded on
 each turn — history is never re-encoded. This keeps subsequent turns fast
 regardless of conversation length.
 ```rust
-use bitnet::{
+use bitnet_rs::{
     init, suppress_warnings, ContextParams, GenerateParams,
     Model, ModelParams, SamplingStrategy,
 };
 use std::io::Write;
 
-fn main() -> Result<(), bitnet::Error> {
+fn main() -> Result<(), bitnet_rs::Error> {
     init();
     suppress_warnings();
 
@@ -197,7 +210,7 @@ fn main() -> Result<(), bitnet::Error> {
     // Start a fresh conversation on the same session
     session.reset();
 
-    bitnet::deinit();
+    bitnet_rs::deinit();
     Ok(())
 }
 ```
@@ -268,6 +281,3 @@ each assistant turn. Always call `session.reset()` between separate
 conversations. Do not call `session.encode()` before the first
 `generate_streaming` call on a fresh session as this will prevent BOS from
 being added.
-
-**Build time.** The first build compiles bitnet.cpp from source via CMake,
-which takes a few minutes. Subsequent builds use the cached output.
