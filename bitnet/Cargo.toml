@@ -1,5 +1,5 @@
 [package]
-name = "bitnet-rs"
+name = "bitnet-llm"
 version = "1.0.0"
 edition = "2021"
 description = "Safe Rust bindings to Microsoft's BitNet b1.58 inference engine."

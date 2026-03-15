@@ -14,9 +14,9 @@ use std::env;
 use std::io::Write;
 use std::time::Instant;
 
-use bitnet_rs::{ContextParams, GenerateParams, Model, ModelParams, SamplingStrategy};
+use bitnet_llm::{ContextParams, GenerateParams, Model, ModelParams, SamplingStrategy};
 
-fn main() -> Result<(), bitnet_rs::Error> {
+fn main() -> Result<(), bitnet_llm::Error> {
     let args: Vec<String> = env::args().collect();
 
     if args.len() < 3 {
@@ -32,8 +32,8 @@ fn main() -> Result<(), bitnet_rs::Error> {
     let model_path = &args[1];
     let prompt = &args[2];
 
-    bitnet_rs::init();
-    bitnet_rs::suppress_warnings();
+    bitnet_llm::init();
+    bitnet_llm::suppress_warnings();
 
     println!("Loading model from {model_path}...");
     let load_start = Instant::now();
@@ -75,6 +75,6 @@ fn main() -> Result<(), bitnet_rs::Error> {
     println!("Time             : {elapsed:.2}s");
     println!("Tokens per second: {:.2}", token_count as f32 / elapsed);
 
-    bitnet_rs::deinit();
+    bitnet_llm::deinit();
     Ok(())
 }

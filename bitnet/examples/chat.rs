@@ -12,9 +12,9 @@ use std::env;
 use std::io::{self, BufRead, Write};
 use std::time::Instant;
 
-use bitnet_rs::{ContextParams, GenerateParams, Model, ModelParams, SamplingStrategy};
+use bitnet_llm::{ContextParams, GenerateParams, Model, ModelParams, SamplingStrategy};
 
-fn main() -> Result<(), bitnet_rs::Error> {
+fn main() -> Result<(), bitnet_llm::Error> {
     let args: Vec<String> = env::args().collect();
 
     if args.len() < 2 {
@@ -33,8 +33,8 @@ fn main() -> Result<(), bitnet_rs::Error> {
         .map(|s| s.as_str())
         .unwrap_or("You are a helpful assistant.");
 
-    bitnet_rs::init();
-    bitnet_rs::suppress_warnings();
+    bitnet_llm::init();
+    bitnet_llm::suppress_warnings();
 
     println!("Loading model from {model_path}...");
     let load_start = Instant::now();
@@ -120,6 +120,6 @@ fn main() -> Result<(), bitnet_rs::Error> {
         first_turn = false;
     }
 
-    bitnet_rs::deinit();
+    bitnet_llm::deinit();
     Ok(())
 }

@@ -1,4 +1,4 @@
-# bitnet-rs
+# bitnet-llm
 
 Safe Rust bindings to Microsoft's [BitNet b1.58](https://github.com/microsoft/BitNet)
 inference engine (`bitnet.cpp`).
@@ -14,7 +14,7 @@ and Linux (x86-64).
 Add to your `Cargo.toml`:
 ```toml
 [dependencies]
-bitnet-rs = "1.0.0"
+bitnet-llm = "1.0.0"
 ```
 
 Note: the first build compiles bitnet.cpp from source via CMake which takes a
@@ -88,18 +88,18 @@ use the cached CMake output.
 
 ### Running the examples
 ```sh
-# Single prompt inference
-cargo run --release --example inference -- \
+# Single prompt streaming inference
+cargo run --release --example inference_streaming -- \
     models/bitnet-b1.58-2B-4T-bf16/ggml-model-i2s-bitnet.gguf \
     "What is the capital of France?"
 
 # Single prompt, returns full response at once
-cargo run --release --example inference_direct -- \
+cargo run --release --example inference_standard -- \
     models/bitnet-b1.58-2B-4T-bf16/ggml-model-i2s-bitnet.gguf \
     "What is the capital of France?"
 
 # Interactive multi-turn chat
-cargo run --release --example inference_chat_multiturn -- \
+cargo run --release --example chat -- \
     models/bitnet-b1.58-2B-4T-bf16/ggml-model-i2s-bitnet.gguf \
     "You are a helpful assistant."
 ```
@@ -108,13 +108,13 @@ cargo run --release --example inference_chat_multiturn -- \
 
 #### Single-turn inference
 ```rust
-use bitnet_rs::{
+use bitnet_llm::{
     init, suppress_warnings, ContextParams, GenerateParams,
     Model, ModelParams, SamplingStrategy,
 };
 use std::io::Write;
 
-fn main() -> Result<(), bitnet_rs::Error> {
+fn main() -> Result<(), bitnet_llm::Error> {
     init();
     suppress_warnings();
 
@@ -155,7 +155,7 @@ fn main() -> Result<(), bitnet_rs::Error> {
     )?;
     println!("{response}");
 
-    bitnet_rs::deinit();
+    bitnet_llm::deinit();
     Ok(())
 }
 ```
@@ -166,13 +166,13 @@ Sessions track KV cache position across turns. Only new tokens are encoded on
 each turn — history is never re-encoded. This keeps subsequent turns fast
 regardless of conversation length.
 ```rust
-use bitnet_rs::{
+use bitnet_llm::{
     init, suppress_warnings, ContextParams, GenerateParams,
     Model, ModelParams, SamplingStrategy,
 };
 use std::io::Write;
 
-fn main() -> Result<(), bitnet_rs::Error> {
+fn main() -> Result<(), bitnet_llm::Error> {
     init();
     suppress_warnings();
 
@@ -210,7 +210,7 @@ fn main() -> Result<(), bitnet_rs::Error> {
     // Start a fresh conversation on the same session
     session.reset();
 
-    bitnet_rs::deinit();
+    bitnet_llm::deinit();
     Ok(())
 }
 ```

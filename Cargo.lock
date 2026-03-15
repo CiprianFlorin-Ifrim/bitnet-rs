@@ -3,7 +3,7 @@
 version = 4
 
 [[package]]
-name = "bitnet"
+name = "bitnet-rs"
 version = "1.0.0"
 dependencies = [
  "bitnet-sys",
