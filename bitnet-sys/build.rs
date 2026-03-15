@@ -89,6 +89,9 @@ fn main() {
             println!("cargo:rustc-link-lib=pthread");
             println!("cargo:rustc-link-lib=dl");
             println!("cargo:rustc-link-lib=m");
+            // OpenMP is found and used by ggml on Linux. The gomp runtime
+            // must be linked explicitly since we are using static linking.
+            println!("cargo:rustc-link-lib=gomp");
         }
         _ => {}
     }
