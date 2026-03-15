@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "bitnet-sys",
+    "bitnet",
+]
+resolver = "2"

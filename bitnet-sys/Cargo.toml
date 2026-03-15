@@ -1,0 +1,11 @@
+[package]
+name = "bitnet-sys"
+version = "0.1.0"
+edition = "2021"
+description = "Raw FFI bindings to bitnet.cpp (Microsoft's 1-bit LLM inference engine)"
+license = "MIT"
+repository = "https://github.com/ciprianefrim/bitnet-rs"
+links = "llama"
+
+[build-dependencies]
+cmake = "0.1"
