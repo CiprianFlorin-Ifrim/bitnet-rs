@@ -10,4 +10,4 @@ categories = ["science", "api-bindings"]
 readme = "../README.md"
 
 [dependencies]
-bitnet-llm-sys = { path = "../bitnet-llm-sys", version = "1.0.0" }
+bitnet-llm-sys = { path = "../bitnet-llm-sys", version = "1.0.1" }
