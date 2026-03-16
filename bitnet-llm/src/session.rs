@@ -361,7 +361,7 @@ fn token_to_text(
             sys::llama_token_to_piece(
                 model,
                 token,
-                buf.as_mut_ptr() as *mut i8,
+                buf.as_mut_ptr() as *mut std::ffi::c_char,
                 buf.len() as i32,
                 0,
                 false,

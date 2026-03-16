@@ -4,14 +4,14 @@ version = 4
 
 [[package]]
 name = "bitnet-llm"
-version = "1.0.2"
+version = "1.0.3"
 dependencies = [
  "bitnet-llm-sys",
 ]
 
 [[package]]
 name = "bitnet-llm-sys"
-version = "1.0.0"
+version = "1.0.2"
 dependencies = [
  "cmake",
 ]

@@ -14,7 +14,7 @@ and Linux (x86-64).
 Add to your `Cargo.toml`:
 ```toml
 [dependencies]
-bitnet-llm = "1.0.2"
+bitnet-llm = "1.0.3"
 ```
 
 Note: the first build compiles bitnet.cpp from source via CMake which takes a

@@ -1,6 +1,6 @@
 [package]
 name = "bitnet-llm"
-version = "1.0.2"
+version = "1.0.3"
 edition = "2021"
 description = "Safe Rust bindings to Microsoft's BitNet b1.58 inference engine."
 license = "MIT"
@@ -10,4 +10,4 @@ categories = ["science", "api-bindings"]
 readme = "../README.md"
 
 [dependencies]
-bitnet-llm-sys = { path = "../bitnet-llm-sys", version = "1.0.1" }
+bitnet-llm-sys = { path = "../bitnet-llm-sys", version = "1.0.2" }
