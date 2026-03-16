@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "bitnet-sys",
-    "bitnet",
+    "bitnet-llm-sys",
+    "bitnet-llm",
 ]
 resolver = "2"

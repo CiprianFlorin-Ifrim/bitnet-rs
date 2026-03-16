@@ -3,7 +3,7 @@ use std::ptr::NonNull;
 use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use bitnet_sys as sys;
+use bitnet_llm_sys as sys;
 
 use crate::error::Error;
 use crate::model::ModelInner;

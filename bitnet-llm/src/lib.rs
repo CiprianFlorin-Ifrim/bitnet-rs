@@ -86,12 +86,12 @@ pub use session::Session;
 /// Initialises the ggml backend. Must be called once before the first
 /// Model::load call.
 pub fn init() {
-    unsafe { bitnet_sys::llama_backend_init() };
+    unsafe { bitnet_llm_sys::llama_backend_init() };
 }
 
 /// Releases resources allocated by init. Optional at process exit.
 pub fn deinit() {
-    unsafe { bitnet_sys::llama_backend_free() };
+    unsafe { bitnet_llm_sys::llama_backend_free() };
 }
 
 /// Suppresses warning-level output from the underlying library while keeping
@@ -117,5 +117,5 @@ pub fn suppress_warnings() {
             eprint!("{s}");
         }
     }
-    unsafe { bitnet_sys::llama_log_set(Some(filter_log), std::ptr::null_mut()) };
+    unsafe { bitnet_llm_sys::llama_log_set(Some(filter_log), std::ptr::null_mut()) };
 }

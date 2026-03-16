@@ -4,7 +4,7 @@ Safe Rust bindings to Microsoft's [BitNet b1.58](https://github.com/microsoft/Bi
 inference engine (`bitnet.cpp`).
 
 Provides a clean, ergonomic API with both full-response and streaming inference,
-multi-turn chat with incremental KV cache, and targeting macOS (Apple Silicon)
+multi-turn chat with incremental KV cache, targeting macOS (Apple Silicon)
 and Linux (x86-64).
 
 ---
@@ -14,7 +14,7 @@ and Linux (x86-64).
 Add to your `Cargo.toml`:
 ```toml
 [dependencies]
-bitnet-llm = "1.0.0"
+bitnet-llm = "1.0.2"
 ```
 
 Note: the first build compiles bitnet.cpp from source via CMake which takes a
@@ -29,7 +29,6 @@ few minutes. Subsequent builds use the cached output.
 | Rust >= 1.73 | `rustup update stable` |
 | CMake >= 3.14 | `brew install cmake` / `apt install cmake` |
 | Clang | Required by bitnet.cpp; usually already present |
-| Python 3 + pip | For model conversion only, not at Rust build time |
 | `hf` CLI | `pip install huggingface_hub` |
 
 **macOS (Apple Silicon) only:** Xcode Command Line Tools (`xcode-select --install`).
@@ -38,13 +37,26 @@ few minutes. Subsequent builds use the cached output.
 
 ## Model setup
 
-The pre-packaged GGUF on Hugging Face is missing pre-tokenizer metadata and
-produces incoherent output. You must convert from the BF16 master weights.
-```sh
-# Create a conda environment (recommended)
-conda create -n bitnet python=3.11
-conda activate bitnet
+There are two options for obtaining the model.
 
+### Option 1 — Pre-packaged GGUF (simplest)
+
+Download the pre-converted GGUF directly from Hugging Face:
+```sh
+hf download microsoft/BitNet-b1.58-2B-4T-gguf \
+    --local-dir models/BitNet-b1.58-2B-4T
+```
+
+The model file is `models/BitNet-b1.58-2B-4T/ggml-model-i2_s.gguf`.
+
+Note: this file is missing pre-tokenizer metadata which triggers a warning at
+load time. Output quality on Linux x86 has been verified to be correct despite
+this warning.
+
+### Option 2 — Convert from BF16 weights
+
+The converted GGUF preserves full tokenizer metadata:
+```sh
 # Install conversion dependencies
 pip install huggingface_hub numpy torch
 
@@ -57,7 +69,7 @@ git clone https://github.com/microsoft/BitNet /tmp/bitnet
 pip install -r /tmp/bitnet/requirements.txt
 
 # Convert to GGUF format
-python /tmp/bitnet/utils/convert-helper-bitnet.py \
+python3 /tmp/bitnet/utils/convert-helper-bitnet.py \
     models/bitnet-b1.58-2B-4T-bf16
 ```
 
@@ -90,17 +102,17 @@ use the cached CMake output.
 ```sh
 # Single prompt streaming inference
 cargo run --release --example inference_streaming -- \
-    models/bitnet-b1.58-2B-4T-bf16/ggml-model-i2s-bitnet.gguf \
+    models/BitNet-b1.58-2B-4T/ggml-model-i2_s.gguf \
     "What is the capital of France?"
 
 # Single prompt, returns full response at once
 cargo run --release --example inference_standard -- \
-    models/bitnet-b1.58-2B-4T-bf16/ggml-model-i2s-bitnet.gguf \
+    models/BitNet-b1.58-2B-4T/ggml-model-i2_s.gguf \
     "What is the capital of France?"
 
 # Interactive multi-turn chat
 cargo run --release --example chat -- \
-    models/bitnet-b1.58-2B-4T-bf16/ggml-model-i2s-bitnet.gguf \
+    models/BitNet-b1.58-2B-4T/ggml-model-i2_s.gguf \
     "You are a helpful assistant."
 ```
 
@@ -119,7 +131,7 @@ fn main() -> Result<(), bitnet_llm::Error> {
     suppress_warnings();
 
     let model = Model::load(
-        "models/bitnet-b1.58-2B-4T-bf16/ggml-model-i2s-bitnet.gguf",
+        "models/BitNet-b1.58-2B-4T/ggml-model-i2_s.gguf",
         ModelParams::default(),
     )?;
 
@@ -177,7 +189,7 @@ fn main() -> Result<(), bitnet_llm::Error> {
     suppress_warnings();
 
     let model = Model::load(
-        "models/bitnet-b1.58-2B-4T-bf16/ggml-model-i2s-bitnet.gguf",
+        "models/BitNet-b1.58-2B-4T/ggml-model-i2_s.gguf",
         ModelParams::default(),
     )?;
 
@@ -264,9 +276,8 @@ fn main() -> Result<(), bitnet_llm::Error> {
 ARM TL1 kernel is used on Apple Silicon and the x86 TL2 kernel on Linux. GPU
 offloading is not supported.
 
-**Single-token decode loop.** The BitNet kernels produce valid output only when
-decoding one token at a time for multi-turn systems. 
-This library handles this correctly internally.
+**Single-token processing.** The BitNet kernels produce valid output only when
+processing one token at a time. This library handles this correctly internally.
 
 **Chat template.** This model uses the Llama 3 chat template with
 `<|start_header_id|>`, `<|end_header_id|>`, and `<|eot_id|>` control tokens.

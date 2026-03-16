@@ -2,7 +2,7 @@ use std::ffi::CString;
 use std::ptr::NonNull;
 use std::sync::Arc;
 
-use bitnet_sys as sys;
+use bitnet_llm_sys as sys;
 
 use crate::error::Error;
 use crate::params::{ContextParams, ModelParams};
