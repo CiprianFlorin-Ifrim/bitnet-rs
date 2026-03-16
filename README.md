@@ -53,7 +53,7 @@ Note: this file is missing pre-tokenizer metadata which triggers a warning at
 load time. Output quality on Linux x86 has been verified to be correct despite
 this warning.
 
-### Option 2 — Convert from BF16 weights
+### Option 2 — Convert from BF16 weights (a must for ARM systems)
 
 The converted GGUF preserves full tokenizer metadata:
 ```sh
@@ -93,6 +93,22 @@ The build script auto-detects AVX-512 and enables the `TL2` BitNet kernel if
 available, falling back to the `TL1` kernel automatically. Build time is a few
 minutes on first run as bitnet.cpp is compiled from source. Subsequent builds
 use the cached CMake output.
+
+---
+
+## Performance
+
+Benchmarked on [Hetzner Cloud](https://www.hetzner.com/cloud/) using the
+`BitNet-b1.58-2B-4T` model with `max_tokens = 512`, `TopP` sampling.
+
+| Instance | CPU | Arch | Kernel | TTFT | Short tok/s | Long tok/s |
+|----------|-----|------|--------|------|-------------|------------|
+| CX23 | 2 vCPU Intel/AMD | x86-64 (AVX-512) | TL2 | ~2.5s | 2.3–2.5 | 7.4 |
+| CAX11 | 2 vCPU Ampere | ARM64 | TL1 | ~2.6s | 2.4 | 7.5 |
+
+TTFT includes prompt prefill. Short tok/s is averaged over responses under 30
+tokens where prefill overhead dominates; long tok/s is averaged over responses
+of 100+ tokens where generation dominates.
 
 ---
 
@@ -292,3 +308,6 @@ each assistant turn. Always call `session.reset()` between separate
 conversations. Do not call `session.encode()` before the first
 `generate_streaming` call on a fresh session as this will prevent BOS from
 being added.
+
+**Generation.** The pre-packaged GGUF (`Option 1`) produces word-salad output on ARM.
+Use `Option 2` (convert from BF16) on ARM Linux.
